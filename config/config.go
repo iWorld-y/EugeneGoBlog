@@ -15,6 +15,7 @@ type Viewer struct {
 	Logo        string
 	Navigation  []string
 	Bilibili    string
+	Zhihu       string
 	Avatar      string
 	UserName    string
 	UserDesc    string

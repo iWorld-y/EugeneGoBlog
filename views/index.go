@@ -9,25 +9,21 @@ import (
 
 func (*HTMLApi) Index(w http.ResponseWriter, r *http.Request) {
 	//页面上涉及到的所有的数据，必须有定义
-	var categorys = []models.Category{
-		{
-			Cid:  1,
-			Name: "go",
-		},
-	}
-	var posts = []models.PostMore{
-		{
-			Pid:          1,
-			Title:        "go博客",
-			Content:      "内容",
-			UserName:     "码神",
-			ViewCount:    123,
-			CreateAt:     "2022-02-20",
-			CategoryId:   1,
-			CategoryName: "go",
-			Type:         0,
-		},
-	}
+	var categorys = []models.Category{{
+		Cid:  1,
+		Name: "go",
+	}}
+	var posts = []models.PostMore{{
+		Pid:          1,
+		Title:        "go博客",
+		Content:      "内容",
+		UserName:     "Eugene",
+		ViewCount:    123,
+		CreateAt:     "2024-02-27",
+		CategoryId:   1,
+		CategoryName: "go",
+		Type:         0,
+	}}
 	hr := &models.HomeResponse{
 		config.Cfg.Viewer,
 		categorys,
@@ -39,5 +35,4 @@ func (*HTMLApi) Index(w http.ResponseWriter, r *http.Request) {
 	}
 	index := common.Template.Index
 	index.WriteData(w, hr)
-
 }

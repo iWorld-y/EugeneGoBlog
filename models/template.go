@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"html/template"
 	"io"
 	"log"
@@ -33,42 +34,56 @@ func Date(layout string) string {
 	return time.Now().Format(layout)
 }
 
+func DateDay(date time.Time) string {
+	return date.Format("2024-02-27 19:15:00")
+}
+
 func (t *TemplateBlog) WriteData(w io.Writer, data interface{}) {
 	if err := t.Execute(w, data); err != nil {
-		w.Write([]byte("Error"))
+		w.Write([]byte("template.go WriteData Error"))
+		log.Println("template.go WriteData Error")
 	}
 }
 
-func readTemplate(templates []string, templateDir string) []TemplateBlog {
+func readTemplate(templates []string, templateDir string) ([]TemplateBlog, error) {
 	var tbs []TemplateBlog
 
 	for _, view := range templates {
 		viewName := view + ".html"
 		t := template.New(viewName)
 
-		home := templateDir + "/home.html"
-		footer := templateDir + "/layout/footer.html"
-		header := templateDir + "/layout/header.html"
-		personal := templateDir + "/layout/personal.html"
-		postList := templateDir + "/layout/post-list.html"
-		pagination := templateDir + "/layout/pagination.html"
+		home := templateDir + "home.html"
+		footer := templateDir + "layout/footer.html"
+		header := templateDir + "layout/header.html"
+		personal := templateDir + "layout/personal.html"
+		postList := templateDir + "layout/post-list.html"
+		pagination := templateDir + "layout/pagination.html"
 
-		t.Funcs(template.FuncMap{"isODD": IsODD, "getNextName": GetNextName, "date": Date, "dateDay": Date})
-		t, err := t.ParseFiles(templateDir+"/"+viewName, home, header, footer, personal, postList, pagination)
+		t.Funcs(template.FuncMap{"isODD": IsODD, "getNextName": GetNextName, "date": Date, "dateDay": DateDay})
+		t, err := t.ParseFiles(templateDir+viewName, home, header, footer, personal, postList, pagination)
 		if err != nil {
 			log.Println("解析模板错误: ", err)
+			return nil, err
 		}
 		tbs = append(tbs, TemplateBlog{Template: t})
 	}
-	return tbs
+	fmt.Printf("\033[1;37;41m%s\033[0m\n", "Template 读取完毕. ")
+	return tbs, nil
 }
 
-func InitTemplate(templateDir string) HtmlTemplate {
+func InitTemplate(templateDir string) (HtmlTemplate, error) {
 
-	tp := readTemplate([]string{
+	tp, err := readTemplate([]string{
 		"index", "category", "custom", "detail",
 		"login", "pigeonhole", "writing",
 	}, templateDir)
+	if err != nil {
+		log.Println("InitTemplate:\t", err)
+		var htmlTemplate HtmlTemplate
+		return htmlTemplate, err
+	}
+	fmt.Printf("\033[1;37;41m%s\033[0m\n", "Template 初始化完毕. ")
+
 	return HtmlTemplate{
 		Index:      tp[0],
 		Category:   tp[1],
@@ -77,6 +92,6 @@ func InitTemplate(templateDir string) HtmlTemplate {
 		Login:      tp[4],
 		Pigeonhole: tp[5],
 		Writing:    tp[6],
-	}
+	}, nil
 
 }
