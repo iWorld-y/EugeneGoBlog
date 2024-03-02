@@ -23,3 +23,13 @@ func GetAllCategory() ([]models.Category, error) {
 	}
 	return categorys, nil
 }
+func GetCategoryNameByID(cid int) string {
+	if row := DB.QueryRow("select name from goblog.blog_category where cid=?", cid); row.Err() == nil {
+		var categoryName string
+		_ = row.Scan(&categoryName)
+		return categoryName
+	} else {
+		log.Println("GetCategoryNameByID 类别读取错误:\t", row.Err())
+	}
+	return ""
+}

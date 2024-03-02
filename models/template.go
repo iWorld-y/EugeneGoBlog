@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"html/template"
 	"io"
 	"log"
@@ -35,7 +34,7 @@ func Date(layout string) string {
 }
 
 func DateDay(date time.Time) string {
-	return date.Format("2024-02-27 19:15:00")
+	return date.Format("2006-01-02 15:04:05")
 }
 
 func (t *TemplateBlog) WriteData(w io.Writer, data interface{}) {
@@ -77,7 +76,6 @@ func readTemplate(templates []string, templateDir string) ([]TemplateBlog, error
 		}
 		tbs = append(tbs, TemplateBlog{Template: t})
 	}
-	fmt.Printf("\033[1;37;41m%s\033[0m\n", "Template 读取完毕. ")
 	return tbs, nil
 }
 
@@ -92,7 +90,6 @@ func InitTemplate(templateDir string) (HtmlTemplate, error) {
 		var htmlTemplate HtmlTemplate
 		return htmlTemplate, err
 	}
-	fmt.Printf("\033[1;37;41m%s\033[0m\n", "Template 初始化完毕. ")
 
 	return HtmlTemplate{
 		Index:      tp[0],
