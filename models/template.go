@@ -40,8 +40,18 @@ func DateDay(date time.Time) string {
 
 func (t *TemplateBlog) WriteData(w io.Writer, data interface{}) {
 	if err := t.Execute(w, data); err != nil {
-		w.Write([]byte("template.go WriteData Error"))
-		log.Println("template.go WriteData Error")
+		w.Write([]byte(err.Error()))
+		log.Println(err)
+		return
+	}
+
+}
+func (t *TemplateBlog) WriteError(w io.Writer, err error) {
+	if err != nil {
+		if _, err2 := w.Write([]byte(err.Error())); err2 != nil {
+			log.Println(err)
+			log.Println(err2)
+		}
 	}
 }
 

@@ -8,6 +8,7 @@ import (
 type tomlConfig struct {
 	Viewer Viewer
 	System SystemConfig
+	Mysql  Mysql
 }
 type Viewer struct {
 	Title       string
@@ -31,6 +32,10 @@ type SystemConfig struct {
 	ValineAppid     string
 	ValineAppKey    string
 	ValineServerURL string
+}
+type Mysql struct {
+	User     string
+	Password string
 }
 
 var Cfg *tomlConfig
