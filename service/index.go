@@ -6,6 +6,7 @@ import (
 	"EugeneGoBlog/models"
 	"html/template"
 	"log"
+	"math"
 )
 
 func GetAllIndexInfo(page, pageSize int) (*models.HomeResponse, error) {
@@ -35,14 +36,21 @@ func GetAllIndexInfo(page, pageSize int) (*models.HomeResponse, error) {
 		}
 		postMores = append(postMores, postMore)
 	}
+
+	total := dao.CountGetAllPost()
+	pageCount := int(math.Ceil(float64(total) / 10.0))
+	var pages []int
+	for i := 0; i < pageCount; i++ {
+		pages = append(pages, i+1)
+	}
 	hr := &models.HomeResponse{
-		config.Cfg.Viewer,
-		categorys,
-		postMores,
-		1,
-		1,
-		[]int{1},
-		true,
+		Viewer:    config.Cfg.Viewer,
+		Categorys: categorys,
+		Posts:     postMores,
+		Total:     total,
+		Page:      page,
+		Pages:     pages,
+		PageEnd:   page != pageCount,
 	}
 	return hr, nil
 }
