@@ -7,7 +7,7 @@ import (
 
 func GetUser(userName, passwd string) *models.User {
 	if row := DB.QueryRow(
-		"select user_name from goblog.blog_user where user_name=? and passwd=? limit 1",
+		"select * from goblog.blog_user where user_name=? and passwd=? limit 1",
 		userName,
 		passwd); row.Err() == nil {
 		// 若无错误
