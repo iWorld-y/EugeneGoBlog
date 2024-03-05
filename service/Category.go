@@ -23,9 +23,8 @@ func GetPostsByCategoryId(cid, page, pageSize int) (*models.CategoryResponse, er
 	}
 
 	posts, err := dao.GetPostPageByCategortID(cid, page, pageSize)
-	for i := 0; i < len(posts); i++ {
-		post := &posts[i]
-		post.Content = string([]rune(post.Content)[:100])
+	for i, _ := range posts {
+		posts[i].Content = string([]rune(posts[i].Content)[:100])
 	}
 	postMores := dao.GetPostMores(posts)
 
