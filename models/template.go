@@ -37,13 +37,13 @@ func DateDay(date time.Time) string {
 	return date.Format("2006-01-02 15:04:05")
 }
 
-func (t *TemplateBlog) WriteData(w io.Writer, data interface{}) {
+func (t *TemplateBlog) WriteData(w io.Writer, data interface{}) error {
 	if err := t.Execute(w, data); err != nil {
 		w.Write([]byte(err.Error()))
 		log.Println(err)
-		return
+		return err
 	}
-
+	return nil
 }
 func (t *TemplateBlog) WriteError(w io.Writer, err error) {
 	if err != nil {

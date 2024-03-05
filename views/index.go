@@ -29,6 +29,7 @@ func (*HTMLApi) Index(w http.ResponseWriter, r *http.Request) {
 		log.Println("(*HTMLApi) Index 首页获取数据失败:\t", err)
 		index.WriteError(w, errors.New("系统内部错误\n"))
 	}
-	index.WriteData(w, hr)
-
+	if err := index.WriteData(w, hr); err != nil {
+		log.Println(err)
+	}
 }

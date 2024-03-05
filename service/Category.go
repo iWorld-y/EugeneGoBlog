@@ -8,7 +8,13 @@ import (
 	"math"
 )
 
-func GetAllIndexInfo(page, pageSize int) (*models.HomeResponse, error) {
+func GetPostsByCategoryId(cid, page, pageSize int) (*models.CategoryResponse, error) {
+	/*
+		获取指定类别的文章
+		cid: 文章类别 id
+		page: 页数
+		pageSize: 一页中的文章数量
+	*/
 	//页面上涉及到的所有的数据，必须有定义
 	allCategories, err := dao.GetAllCategory()
 	if err != nil {
@@ -16,10 +22,10 @@ func GetAllIndexInfo(page, pageSize int) (*models.HomeResponse, error) {
 		return nil, err
 	}
 
-	posts, err := dao.GetPostPage(page, pageSize)
+	posts, err := dao.GetPostPageByCategortID(cid, page, pageSize)
 	postMores := dao.GetPostMores(posts)
 
-	total := dao.CountGetAllPost()
+	total := dao.CountGetPostsByCategoryID(cid)
 	pageCount := int(math.Ceil(float64(total) / 10.0))
 	var pages []int
 	for i := 0; i < pageCount; i++ {
@@ -34,5 +40,10 @@ func GetAllIndexInfo(page, pageSize int) (*models.HomeResponse, error) {
 		Pages:      pages,
 		PageEnd:    page != pageCount,
 	}
-	return hr, nil
+	categoryName := dao.GetCategoryNameByID(cid)
+	categoryResponse := &models.CategoryResponse{
+		HomeResponse: hr,
+		CategoryName: categoryName,
+	}
+	return categoryResponse, nil
 }
