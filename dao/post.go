@@ -5,6 +5,28 @@ import (
 	"html/template"
 )
 
+func GetPostByID(postID int) (models.Post, error) {
+	row := DB.QueryRow("select * from goblog.blog_post where pid=?", postID)
+
+	var post models.Post
+	if err := row.Scan(
+		&post.Pid,
+		&post.Title,
+		&post.Content,
+		&post.Markdown,
+		&post.CategoryId,
+		&post.UserId,
+		&post.ViewCount,
+		&post.Type,
+		&post.Slug,
+		&post.CreateAt,
+		&post.UpdateAt,
+	); err != nil {
+		return post, err
+	}
+	return post, nil
+}
+
 func GetPostMores(posts []models.Post) []models.PostMore {
 	//posts, err := dao.GetPostPage(page, pageSize)
 	var postMores []models.PostMore
@@ -13,7 +35,7 @@ func GetPostMores(posts []models.Post) []models.PostMore {
 			Pid:          post.Pid,
 			Title:        post.Title,
 			Slug:         post.Slug,
-			Content:      template.HTML([]rune(post.Content)[:100]),
+			Content:      template.HTML(post.Content),
 			CategoryId:   post.CategoryId,
 			CategoryName: GetCategoryNameByID(post.CategoryId),
 			UserId:       post.UserId,

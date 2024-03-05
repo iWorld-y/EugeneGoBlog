@@ -30,7 +30,7 @@ type SystemConfig struct {
 	QinniuSecretKey string
 	Valine          bool
 	ValineAppid     string
-	ValineAppKey    string
+	ValineAppkey    string
 	ValineServerURL string
 }
 type Mysql struct {
