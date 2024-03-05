@@ -2,6 +2,6 @@ package models
 
 type Result struct {
 	Error string      `json:"error"`
-	Date  interface{} `json:"date"`
+	Data  interface{} `json:"data"`
 	Code  int         `json:"code"`
 }

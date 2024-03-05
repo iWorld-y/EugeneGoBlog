@@ -21,7 +21,7 @@ func init() {
 // Award 生成 Token
 func Award(uid *int) (string, error) {
 	// 默认过期时间: 30 秒
-	expireTime := time.Now().Add(time.Second * 30)
+	expireTime := time.Now().Add(7 * 24 * time.Hour)
 	claims := &Claims{
 		Uid: *uid,
 		StandardClaims: gojwt.StandardClaims{

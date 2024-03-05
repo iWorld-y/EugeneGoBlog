@@ -22,6 +22,10 @@ func GetPostDetail(postID int) (*models.PostRes, error) {
 	return postResponse, nil
 }
 
+func SavePost(post *models.Post) {
+	dao.SavePost(post)
+}
+
 func Writing() (writingResponse models.WritingResponse) {
 	writingResponse.Title = config.Cfg.Viewer.Title
 	writingResponse.CdnURL = config.Cfg.System.CdnURL

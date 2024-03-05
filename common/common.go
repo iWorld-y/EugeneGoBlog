@@ -18,10 +18,10 @@ func GetRequestJsonParam(r *http.Request) map[string]interface{} {
 	_ = json.Unmarshal(body, &params)
 	return params
 }
-func Success(w http.ResponseWriter, date interface{}) {
+func Success(w http.ResponseWriter, data interface{}) {
 	result := models.Result{
 		Error: "",
-		Date:  date,
+		Data:  data,
 		Code:  200,
 	}
 	resultJson, _ := json.Marshal(result)

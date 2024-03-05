@@ -1,13 +1,62 @@
 package api
 
 import (
+	"EugeneGoBlog/common"
 	"EugeneGoBlog/config"
+	"EugeneGoBlog/dao"
+	"EugeneGoBlog/models"
+	"EugeneGoBlog/service"
+	"EugeneGoBlog/utils"
+	"errors"
 	"html/template"
+	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
-func (*ApiHandler) SaveAndUpdatePost(w http.ResponseWriter, r *http.Request) {}
+func (*ApiHandler) SaveAndUpdatePost(w http.ResponseWriter, r *http.Request) {
+	token := r.Header.Get("Authorization")
+	_, claims, err := utils.ParseToken(token)
+	log.Println(token)
+	log.Println(claims)
+	userID := claims.Uid
+	if err != nil {
+		common.Error(w, errors.New("登陆已过期"))
+		log.Println("登陆已过期")
+		return
+	}
+
+	method := r.Method
+	switch method {
+	case http.MethodPost:
+		params := common.GetRequestJsonParam(r)
+		cid, _ := strconv.Atoi(params["categoryId"].(string))
+		content := params["content"].(string)
+		markdown := params["markdown"].(string)
+		slug := params["slug"].(string)
+		title := params["title"].(string)
+		postType := int(params["type"].(float64))
+		post := &models.Post{
+			Pid:        dao.CountGetAllPost() + 1,
+			Title:      title,
+			Slug:       slug,
+			Content:    content,
+			Markdown:   markdown,
+			CategoryId: cid,
+			UserId:     userID,
+			ViewCount:  0,
+			Type:       postType,
+			CreateAt:   time.Now(),
+			UpdateAt:   time.Now(),
+		}
+		service.SavePost(post)
+		common.Success(w, post)
+	case http.MethodPut:
+
+	}
+
+}
 
 type Post struct {
 	Pid        int       `json:"pid"`        // 文章ID

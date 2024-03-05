@@ -3,6 +3,7 @@ package dao
 import (
 	"EugeneGoBlog/models"
 	"html/template"
+	"log"
 )
 
 func GetPostByID(postID int) (models.Post, error) {
@@ -117,4 +118,23 @@ func GetPostPage(page, pageSize int) ([]models.Post, error) {
 		posts = append(posts, post)
 	}
 	return posts, nil
+}
+
+func SavePost(post *models.Post) {
+	result, err := DB.Exec("insert into goblog.blog_post (title, content, markdown, category_id, user_id, view_count, type, slug, create_at, update_at) values (?,?,?,?,?,?,?,?,?,?)",
+		post.Title,
+		post.Content,
+		post.Markdown,
+		post.CategoryId,
+		post.UserId,
+		post.ViewCount,
+		post.Type,
+		post.Slug,
+		post.CreateAt,
+		post.UpdateAt)
+	if err != nil {
+		log.Println("保存文章失败")
+	}
+	postID, _ := result.LastInsertId()
+	post.Pid = int(postID)
 }
