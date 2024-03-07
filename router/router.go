@@ -27,6 +27,7 @@ func Router() {
 	http.HandleFunc("/writing", views.HTML.Writing)
 
 	http.HandleFunc("/api/v1/post", api.API.SaveAndUpdatePost)
+	http.HandleFunc("/api/v1/post/", api.API.GetPost)
 	http.HandleFunc("/api/v1/login", api.API.Login)
 	http.Handle("/resource/", http.StripPrefix("/resource/", http.FileServer(http.Dir("public/resource/"))))
 }

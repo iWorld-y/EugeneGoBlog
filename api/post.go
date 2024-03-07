@@ -12,8 +12,25 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
+
+func (*ApiHandler) GetPost(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Path
+	postID, err := strconv.Atoi(strings.TrimPrefix(path, "/api/v1/post/"))
+	if err != nil {
+		common.Error(w, errors.New("请求路径无效, path:\t"+path))
+		return
+	}
+	post, err := dao.GetPostByID(postID)
+	if err != nil {
+		log.Println(err)
+		common.Error(w, err)
+		return
+	}
+	common.Success(w, post)
+}
 
 func (*ApiHandler) SaveAndUpdatePost(w http.ResponseWriter, r *http.Request) {
 	token := r.Header.Get("Authorization")
@@ -53,9 +70,32 @@ func (*ApiHandler) SaveAndUpdatePost(w http.ResponseWriter, r *http.Request) {
 		service.SavePost(post)
 		common.Success(w, post)
 	case http.MethodPut:
-
+		params := common.GetRequestJsonParam(r)
+		cid, _ := params["categoryId"].(int)
+		content := params["content"].(string)
+		markdown := params["markdown"].(string)
+		slug := params["slug"].(string)
+		title := params["title"].(string)
+		postType := int(params["type"].(float64))
+		pid := int(params["pid"].(float64))
+		viewCount := int(params["viewCount"].(float64))
+		post := &models.Post{
+			Pid:        pid,
+			Title:      title,
+			Slug:       slug,
+			Content:    content,
+			Markdown:   markdown,
+			CategoryId: cid,
+			UserId:     userID,
+			ViewCount:  viewCount,
+			Type:       postType,
+			CreateAt:   time.Now(),
+			UpdateAt:   time.Now(),
+		}
+		log.Println(post.Title)
+		service.UpdatePost(post)
+		common.Success(w, post)
 	}
-
 }
 
 type Post struct {

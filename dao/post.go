@@ -92,7 +92,7 @@ func CountGetAllPost() int {
 
 func GetPostPage(page, pageSize int) ([]models.Post, error) {
 	page = (page - 1) * pageSize
-	rows, err := DB.Query("select * from goblog.blog_post limit ?,?", page, pageSize)
+	rows, err := DB.Query("select * from goblog.blog_post order by update_at DESC limit ?,?", page, pageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -137,4 +137,20 @@ func SavePost(post *models.Post) {
 	}
 	postID, _ := result.LastInsertId()
 	post.Pid = int(postID)
+}
+
+func UpdatePost(post *models.Post) {
+	_, err := DB.Exec("update goblog.blog_post set title=?,content=?,markdown=?,category_id=?,type=?,slug=?,update_at=? where pid=?",
+		post.Title,
+		post.Content,
+		post.Markdown,
+		post.CategoryId,
+		post.Type,
+		post.Slug,
+		post.UpdateAt,
+		post.Pid,
+	)
+	if err != nil {
+		log.Println("更新文章失败:\t", err)
+	}
 }
