@@ -21,31 +21,23 @@ func GetPostSearch(condition string) (posts []models.Post) {
 	return posts
 }
 
-func GetPostByID(postID int) (models.Post, error) {
-	row := DB.QueryRow("select * from goblog.blog_post where pid=?", postID)
-
-	var post models.Post
-	if err := row.Scan(
-		&post.Pid,
-		&post.Title,
-		&post.Content,
-		&post.Markdown,
-		&post.CategoryId,
-		&post.UserId,
-		&post.ViewCount,
-		&post.Type,
-		&post.Slug,
-		&post.CreateAt,
-		&post.UpdateAt,
-	); err != nil {
-		return post, err
+func GetPostByID(postID int) (post models.Post, err error) {
+	row, err := DB.Query("select * from goblog.blog_post where pid=?", postID)
+	if err != nil {
+		log.Println(err)
+		return models.Post{}, err
 	}
+
+	posts, err := readPostsFromRows(row)
+	if err != nil {
+		log.Println(err)
+		return models.Post{}, err
+	}
+	post = posts[0]
 	return post, nil
 }
 
-func Post2PostMores(posts []models.Post) []models.PostMore {
-	//posts, err := dao.GetPostPage(page, pageSize)
-	var postMores []models.PostMore
+func Post2PostMores(posts []models.Post) (postMores []models.PostMore) {
 	for _, post := range posts {
 		postMore := models.PostMore{
 			Pid:          post.Pid,
@@ -98,19 +90,18 @@ func GetPostPageByCategortID(cid, page, pageSize int) ([]models.Post, error) {
 
 	return posts, nil
 }
-func CountGetPostsByCategoryID(cid int) int {
-	var count int
-	_ = DB.QueryRow("select count(1) from goblog.blog_post where category_id=?", cid).Scan(&count)
-	return count
+func CountGetPostsByCategoryID(cid int) (cnt int) {
+	_ = DB.QueryRow("select count(1) from goblog.blog_post where category_id=?", cid).Scan(&cnt)
+	return cnt
 }
 func CountGetAllPost() (cnt int) {
 	_ = DB.QueryRow("select count(1) from goblog.blog_post").Scan(&cnt)
-	return
+	return cnt
 }
 
 func CountGetPostPageBySlug(slug string) (cnt int) {
 	_ = DB.QueryRow("select count(1) from goblog.blog_post where slug=?", slug).Scan(&cnt)
-	return
+	return cnt
 }
 
 func GetAllPost() ([]models.Post, error) {

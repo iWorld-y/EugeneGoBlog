@@ -2,11 +2,9 @@ package main
 
 import (
 	"EugeneGoBlog/common"
-	"EugeneGoBlog/router"
+	"EugeneGoBlog/server"
 	"flag"
-	"fmt"
 	"log"
-	"net/http"
 )
 
 func init() {
@@ -14,26 +12,20 @@ func init() {
 	common.LoadTemplate()
 }
 
-var port80 bool = false
+var testIpAndPort bool = false
 
 func init() {
-	flag.BoolVar(&port80, "port80", false, "使用 80 端口")
+	flag.BoolVar(&testIpAndPort, "testIpAndPort", false, "使用 localhost:8080")
 }
 func main() {
-	flag.Parse()
-
-	port := 8080
-	if port80 {
-		port = 80
-	}
-
-	server := http.Server{
-		Addr: fmt.Sprintf("127.0.0.1:%d", port),
-		//Addr: fmt.Sprintf("0.0.0.0:%d", port),
-	}
-	router.Router()
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
-	if err := server.ListenAndServe(); err != nil {
-		log.Println(err)
+
+	flag.Parse()
+	ip := "localhost"
+	port := "8080"
+	if testIpAndPort {
+		ip = "0.0.0.0"
+		port = "80"
 	}
+	server.APP.Start(ip, port)
 }
