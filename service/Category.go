@@ -26,7 +26,7 @@ func GetPostsByCategoryId(cid, page, pageSize int) (*models.CategoryResponse, er
 	for i, _ := range posts {
 		posts[i].Content = string([]rune(posts[i].Content)[:100])
 	}
-	postMores := dao.GetPostMores(posts)
+	postMores := dao.Post2PostMores(posts)
 
 	total := dao.CountGetPostsByCategoryID(cid)
 	pageCount := int(math.Ceil(float64(total) / 10.0))

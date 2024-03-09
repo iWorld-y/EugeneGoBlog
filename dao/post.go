@@ -28,7 +28,7 @@ func GetPostByID(postID int) (models.Post, error) {
 	return post, nil
 }
 
-func GetPostMores(posts []models.Post) []models.PostMore {
+func Post2PostMores(posts []models.Post) []models.PostMore {
 	//posts, err := dao.GetPostPage(page, pageSize)
 	var postMores []models.PostMore
 	for _, post := range posts {
@@ -88,6 +88,34 @@ func CountGetAllPost() int {
 	var count int
 	_ = DB.QueryRow("select count(1) from goblog.blog_post").Scan(&count)
 	return count
+}
+
+func GetAllPost() ([]models.Post, error) {
+	rows, err := DB.Query("select * from goblog.blog_post order by update_at desc")
+	if err != nil {
+		return nil, err
+	}
+	var posts []models.Post
+
+	for rows.Next() {
+		var post models.Post
+		if err := rows.Scan(
+			&post.Pid,
+			&post.Title,
+			&post.Content,
+			&post.Markdown,
+			&post.CategoryId,
+			&post.UserId,
+			&post.ViewCount,
+			&post.Type,
+			&post.Slug,
+			&post.CreateAt,
+			&post.UpdateAt); err != nil {
+			return nil, err
+		}
+		posts = append(posts, post)
+	}
+	return posts, nil
 }
 
 func GetPostPage(page, pageSize int) ([]models.Post, error) {

@@ -62,3 +62,9 @@ type WritingResponse struct {
 	CdnURL     string
 	Categories []Category
 }
+type PigeonholeResponse struct {
+	config.Viewer
+	config.SystemConfig
+	Categories []Category
+	Lines      map[string][]Post // key: 月份; value: 文章数组
+}

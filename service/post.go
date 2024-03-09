@@ -13,7 +13,7 @@ func GetPostDetail(postID int) (*models.PostRes, error) {
 	if err != nil {
 		return nil, err
 	}
-	postMore := dao.GetPostMores([]models.Post{post})[0]
+	postMore := dao.Post2PostMores([]models.Post{post})[0]
 	postResponse := &models.PostRes{
 		Viewer:       config.Cfg.Viewer,
 		SystemConfig: config.Cfg.System,

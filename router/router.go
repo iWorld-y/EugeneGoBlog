@@ -26,6 +26,8 @@ func Router() {
 	// the page of write blog
 	http.HandleFunc("/writing", views.HTML.Writing)
 
+	http.HandleFunc("/pigeonhole", views.HTML.Pigeonhole)
+
 	http.HandleFunc("/api/v1/post", api.API.SaveAndUpdatePost)
 	http.HandleFunc("/api/v1/post/", api.API.GetPost)
 	http.HandleFunc("/api/v1/qiniu/token", api.API.QiNiuToken)

@@ -20,7 +20,7 @@ func GetAllIndexInfo(page, pageSize int) (*models.HomeResponse, error) {
 	for i, _ := range posts {
 		posts[i].Content = string([]rune(posts[i].Content)[:100])
 	}
-	postMores := dao.GetPostMores(posts)
+	postMores := dao.Post2PostMores(posts)
 
 	total := dao.CountGetAllPost()
 	pageCount := int(math.Ceil(float64(total) / 10.0))
