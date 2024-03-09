@@ -51,7 +51,6 @@ function uploadImage(file, cb) {
             if (res.code !== 200) return alert(res.error);
             const token = res.data;
             const observable = qiniu.upload(file, "goblog/upload/" + Date.now() + "_" + file.name, token, putExtra, config)
-            console.log("token:\n" + token)
             const observer = {
                 next(res) {
                     // ...

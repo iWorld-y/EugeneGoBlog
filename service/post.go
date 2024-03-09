@@ -40,3 +40,13 @@ func Writing() (writingResponse models.WritingResponse) {
 	writingResponse.Categories = categoies
 	return
 }
+func SearchPost(condition string) (searchResponse []models.SearchResponse) {
+	posts := dao.GetPostSearch(condition)
+	for _, post := range posts {
+		searchResponse = append(searchResponse, models.SearchResponse{
+			Pid:   post.Pid,
+			Title: post.Title,
+		})
+	}
+	return
+}

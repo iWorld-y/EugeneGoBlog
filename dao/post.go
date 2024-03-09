@@ -7,6 +7,20 @@ import (
 	"log"
 )
 
+func GetPostSearch(condition string) (posts []models.Post) {
+	rows, err := DB.Query("select * from goblog.blog_post where title like ?", "%"+condition+"%")
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	posts, err = readPostsFromRows(rows)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	return posts
+}
+
 func GetPostByID(postID int) (models.Post, error) {
 	row := DB.QueryRow("select * from goblog.blog_post where pid=?", postID)
 
@@ -81,27 +95,7 @@ func GetPostPageByCategortID(cid, page, pageSize int) ([]models.Post, error) {
 		return nil, err
 	}
 	posts, _ := readPostsFromRows(rows)
-	//var posts []models.Post
-	//for rows.Next() {
-	//    var post models.Post
-	//    if err := rows.Scan(
-	//        &post.Pid,
-	//        &post.Title,
-	//        &post.Content,
-	//        &post.Markdown,
-	//        &post.CategoryId,
-	//        &post.UserId,
-	//        &post.ViewCount,
-	//        &post.Type,
-	//        &post.Slug,
-	//        &post.CreateAt,
-	//        &post.UpdateAt,
-	//    ); err != nil {
-	//        return nil, err
-	//    }
-	//
-	//    posts = append(posts, post)
-	//}
+
 	return posts, nil
 }
 func CountGetPostsByCategoryID(cid int) int {
@@ -126,24 +120,6 @@ func GetAllPost() ([]models.Post, error) {
 	}
 	posts, _ := readPostsFromRows(rows)
 
-	//for rows.Next() {
-	//    var post models.Post
-	//    if err := rows.Scan(
-	//        &post.Pid,
-	//        &post.Title,
-	//        &post.Content,
-	//        &post.Markdown,
-	//        &post.CategoryId,
-	//        &post.UserId,
-	//        &post.ViewCount,
-	//        &post.Type,
-	//        &post.Slug,
-	//        &post.CreateAt,
-	//        &post.UpdateAt); err != nil {
-	//        return nil, err
-	//    }
-	//    posts = append(posts, post)
-	//}
 	return posts, nil
 }
 
@@ -166,27 +142,7 @@ func GetPostPage(page, pageSize int) (posts []models.Post, err error) {
 	if err != nil {
 		return nil, err
 	}
-	//var posts []models.Post
-	//for rows.Next() {
-	//    var post models.Post
-	//    if err := rows.Scan(
-	//        &post.Pid,
-	//        &post.Title,
-	//        &post.Content,
-	//        &post.Markdown,
-	//        &post.CategoryId,
-	//        &post.UserId,
-	//        &post.ViewCount,
-	//        &post.Type,
-	//        &post.Slug,
-	//        &post.CreateAt,
-	//        &post.UpdateAt,
-	//    ); err != nil {
-	//        return nil, err
-	//    }
-	//
-	//    posts = append(posts, post)
-	//}
+
 	if posts, err = readPostsFromRows(rows); err != nil {
 		log.Println(err)
 		return nil, err
