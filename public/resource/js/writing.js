@@ -38,8 +38,8 @@ function initEditor() {
 
 function uploadImage(file, cb) {
     const config = {
-        useCdnDomain: true,
-        region: qiniu.region.z1
+        useCdnDomain: false,
+        region: qiniu.region.z2
     };
     const putExtra = {};
     // 异步获取临时密钥
@@ -51,6 +51,7 @@ function uploadImage(file, cb) {
             if (res.code !== 200) return alert(res.error);
             const token = res.data;
             const observable = qiniu.upload(file, "goblog/upload/" + Date.now() + "_" + file.name, token, putExtra, config)
+            console.log("token:\n" + token)
             const observer = {
                 next(res) {
                     // ...
@@ -60,7 +61,7 @@ function uploadImage(file, cb) {
                 },
                 complete(res) {
                     console.log(res)
-                    cb("https://static.mszlu.com/" + res.key)
+                    cb("http://s9zyjt8b3.hn-bkt.clouddn.com/" + res.key)
                 }
             }
             const subscription = observable.subscribe(observer) // 上传开始
