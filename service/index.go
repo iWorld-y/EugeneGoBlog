@@ -8,7 +8,7 @@ import (
 	"math"
 )
 
-func GetAllIndexInfo(page, pageSize int) (*models.HomeResponse, error) {
+func GetAllIndexInfo(slug string, page, pageSize int) (*models.HomeResponse, error) {
 	//页面上涉及到的所有的数据，必须有定义
 	allCategories, err := dao.GetAllCategory()
 	if err != nil {
@@ -16,13 +16,24 @@ func GetAllIndexInfo(page, pageSize int) (*models.HomeResponse, error) {
 		return nil, err
 	}
 
-	posts, err := dao.GetPostPage(page, pageSize)
+	var posts []models.Post
+	var total int // 当前选择类别下的文章总数
+	if slug == "" {
+		posts, err = dao.GetPostPage(page, pageSize)
+		total = dao.CountGetAllPost()
+	} else {
+		posts, err = dao.GetPostPageBySlug(slug, page, pageSize)
+		total = dao.CountGetPostPageBySlug(slug)
+	}
+
 	for i, _ := range posts {
-		posts[i].Content = string([]rune(posts[i].Content)[:100])
+		// 若文章正文长度大于 100, 则只显示前 100 个 unicode 字符, 其余省略
+		if temp := len([]rune(posts[i].Content)); temp > 100 {
+			posts[i].Content = string([]rune(posts[i].Content)[:100])
+		}
 	}
 	postMores := dao.Post2PostMores(posts)
 
-	total := dao.CountGetAllPost()
 	pageCount := int(math.Ceil(float64(total) / 10.0))
 	var pages []int
 	for i := 0; i < pageCount; i++ {
