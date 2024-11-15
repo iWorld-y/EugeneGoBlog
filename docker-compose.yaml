@@ -1,12 +1,12 @@
 services:
-  alpine:
-    image: alpine:latest
-    container_name: Blog-alpine
-    command: ["sh"]
+  debian:
+    image: debian:latest
+    container_name: Blog-debian
+    command: /bin/bash
     stdin_open: true
     tty: true
     volumes:
-      - ./alpine_data:/data  # 可选，挂载本地目录
+      - ./debian_data:/data  # 可选，挂载本地目录
     environment:
       - MY_ENV_VAR=value  # 可选，设置环境变量
     ports:
