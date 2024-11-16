@@ -7,8 +7,8 @@ WORKDIR /root/project/EugeneGoBlog
 # 将项目文件复制到容器内
 COPY . .
 
-# 编译 Go 程序，生成静态链接的二进制文件
-RUN go build -o main .
+# 确保生成静态链接的二进制文件
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w" -o main .
 
 # 第二阶段：运行阶段
 FROM scratch
