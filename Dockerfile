@@ -15,7 +15,7 @@ FROM scratch
 
 # 将构建好的二进制文件从 builder 阶段复制到最终镜像中
 COPY --from=builder /root/project/EugeneGoBlog/main /main
-# 将静态资源文件 复制到镜像中
+# 将静态资源文件复制到镜像中
 COPY ./etc /etc
 
 # 暴露端口
