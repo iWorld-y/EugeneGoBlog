@@ -1,8 +1,3 @@
-.PHONY: build
-build:
-	git pull
-	CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w" -o main .
-
 .PHONY: deploy
 
 deploy:
@@ -17,4 +12,7 @@ deploy:
 	docker tag eugene-go-blog sgccr.ccs.tencentyun.com/eugene_images/blog:latest
 	docker push sgccr.ccs.tencentyun.com/eugene_images/blog:latest
 	docker image prune -f
+
+.PHONY: run
+run:
 	docker run -d -p 80:80 eugene-go-blog
