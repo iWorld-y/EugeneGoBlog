@@ -1,9 +1,20 @@
+.PHONY: build
+build:
+	git pull
+	CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w" -o main .
+
 .PHONY: deploy
 
 deploy:
 	git pull
-	sudo docker build -t eugene-go-blog .
-	sudo docker tag eugene-go-blog sgccr.ccs.tencentyun.com/eugene_images/blog:latest
-	sudo docker push sgccr.ccs.tencentyun.com/eugene_images/blog:latest
-	sudo docker image prune -f
-	sudo docker run -d -p 80:80 eugene-go-blog
+	CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w" -o main .
+	docker build -t eugene-go-blog .
+	rm main
+	# 阿里云
+	docker tag eugene-go-blog registry.cn-hangzhou.aliyuncs.com/eugene_images/blog:latest
+	docker push registry.cn-hangzhou.aliyuncs.com/eugene_images/blog:latest
+	# 腾讯云
+	docker tag eugene-go-blog sgccr.ccs.tencentyun.com/eugene_images/blog:latest
+	docker push sgccr.ccs.tencentyun.com/eugene_images/blog:latest
+	docker image prune -f
+	docker run -d -p 80:80 eugene-go-blog
