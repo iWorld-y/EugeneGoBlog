@@ -15,4 +15,6 @@ deploy:
 
 .PHONY: run
 run:
-	docker run -d -p 80:80 eugene-go-blog
+	# 默认使用腾讯云
+	docker pull sgccr.ccs.tencentyun.com/eugene_images/blog:latest
+	docker run -d -p 80:80 sgccr.ccs.tencentyun.com/eugene_images/blog:latest
