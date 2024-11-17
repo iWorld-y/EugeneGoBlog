@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package article;
+option go_package="./article";
+
+message ListArticlesReq {}
+message ArticleInfo {
+  string id    = 1;
+  string title = 2;
+}
+message ListArticlesResp {
+  repeated ArticleInfo articles = 1;
+  int64    code                 = 2;
+  string   msg                  = 3;
+}
+
+service Article {
+  rpc ListArticles(ListArticlesReq) returns(ListArticlesResp);
+}
