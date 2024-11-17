@@ -17,3 +17,7 @@ run:
 	# 默认使用腾讯云
 	docker pull sgccr.ccs.tencentyun.com/eugene_images/blog:latest
 	docker run -d -p 80:80 sgccr.ccs.tencentyun.com/eugene_images/blog:latest
+	
+.PHONY: proto
+proto:
+	goctl rpc protoc ./proto/*.proto --go_out=./pb --go-grpc_out=./pb --zrpc_out=. --client=true 
