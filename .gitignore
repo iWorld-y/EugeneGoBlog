@@ -1,3 +1,4 @@
 .vscode/
 .idea/
 debian_data/
+static/
