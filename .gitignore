@@ -1,3 +1,5 @@
 config/config.toml
 .idea
 *.sql
+debian_data/
+static/
