@@ -1,30 +1,32 @@
 package main
 
 import (
-	"log"
+	"github.com/go-kratos/kratos/v2"
+	"github.com/go-kratos/kratos/v2/log"
 	"net/http"
+	"os"
 
-	"github.com/zeromicro/go-zero/core/conf"
-	"github.com/zeromicro/go-zero/rest"
-	"github.com/zeromicro/go-zero/rest/httpx"
+	transhttp "github.com/go-kratos/kratos/v2/transport/http"
+	"github.com/gorilla/mux"
 )
 
 func main() {
-	restConf := &rest.RestConf{}
-	conf.MustLoad("etc/helloworld.yaml", restConf)
-	s, err := rest.NewServer(*restConf)
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
+	router := mux.NewRouter()
+	// 改为相对路径
+	f := os.DirFS("./static")
+	router.PathPrefix("/static").
+		Handler(http.StripPrefix("/static", http.FileServer(http.FS(f))))
 
-	s.AddRoute(rest.Route{
-		Method: http.MethodGet,
-		Path:   "/",
-		Handler: func(rw http.ResponseWriter, r *http.Request) {
-			httpx.OkJson(rw, "Hello, World! ")
-		},
-	})
-	defer s.Stop()
-	s.Start()
+	httpSrv := transhttp.NewServer(transhttp.Address(":8000"))
+	httpSrv.HandlePrefix("/", router)
+
+	app := kratos.New(
+		kratos.Name("static"),
+		kratos.Server(
+			httpSrv,
+		),
+	)
+	if err := app.Run(); err != nil {
+		log.Fatal(err)
+	}
 }
